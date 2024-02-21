@@ -11,5 +11,30 @@ class FirebaseAuthService{
     catch(e){
       print('Something went wrong');
     }
+    return null;
   }
+
+  /// This function is to login user with email and password
+  Future<User?> loginWithEmailAndPassword(String email, String password) async{
+    try{
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return userCredential.user;
+    } on FirebaseAuthException catch(e){
+      print('Firebase login error $e');
+    }catch(e){
+      print('Something went wrong');
+  }
+    return null;
+  }
+
+  ///This function is used to logout user from firebase
+  void signOutUser()async{
+    try{
+      _auth.signOut();
+    }
+    catch(e){
+      print('Error while Signout $e');
+    }
+  }
+
 }

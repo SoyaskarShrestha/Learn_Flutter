@@ -19,7 +19,7 @@ void main() {
     routes: {
       '/': (context) => splash(),
       '/registration_form': (context) => RegistrationForm(),
-      '/login_Form': (context) => Login_Form(),
+      '/login_Form': (context) => Login(),
       '/dashboard': (context) => Dashboard(),
       '/List_view': (context) => ListViewPage(),
       '/mainApp': (context) => MyApp(),
