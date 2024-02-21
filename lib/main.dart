@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:demo/List_view.dart';
 import 'package:demo/dashboard.dart';
 import 'package:demo/login.dart';
@@ -23,6 +25,7 @@ void main() {
       '/dashboard': (context) => Dashboard(),
       '/List_view': (context) => ListViewPage(),
       '/mainApp': (context) => MyApp(),
+      '/profile':(context) => profilePage(),
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,
