@@ -1,3 +1,4 @@
+import 'package:demo/Profile/profile_view.dart';
 import 'package:demo/Service/firebase_database_service.dart';
 import 'package:flutter/material.dart';
 
@@ -23,9 +24,7 @@ class profilePage extends StatelessWidget {
          }
          if(snapshot.connectionState == ConnectionState.done){
            usersList = snapshot.data as List;
-           return Center(
-             child: Text('${usersList[0]}'),
-           );
+           return ProfileView();
          }
          return Center(
            child:

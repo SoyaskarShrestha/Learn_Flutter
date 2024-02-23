@@ -4,7 +4,7 @@ import 'package:demo/List_view.dart';
 import 'package:demo/dashboard.dart';
 import 'package:demo/login.dart';
 import 'package:demo/offers.dart';
-import 'package:demo/profile.dart';
+import 'package:demo/Profile/profile.dart';
 import 'package:demo/splash.dart';
 import 'package:demo/utils/default_firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
