@@ -1,4 +1,7 @@
+import 'package:demo/Model/user_model.dart';
 import 'package:demo/Service/firebase_auth_services.dart';
+import 'package:demo/Service/firebase_database_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegistrationForm extends StatelessWidget {
@@ -6,6 +9,7 @@ class RegistrationForm extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _fullNameController = TextEditingController();
   final _emailAddressController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
   final _passwordController = TextEditingController();
   final _streetAddressController = TextEditingController();
   final _emailRegexPattern = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
@@ -74,6 +78,23 @@ class RegistrationForm extends StatelessWidget {
                     return null;
                   },
                 ),
+
+                  TextFormField(
+                    controller: _phoneNumberController,
+                    keyboardType: TextInputType.phone,
+                    maxLength: 10,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Enter your phone number',
+                    ),
+                    validator: (phoneNumberValue) {
+                      if (phoneNumberValue == null ||
+                          phoneNumberValue.trim().isEmpty) {
+                        return 'Please enter your phone number';
+                      }
+                      return null;
+                    },
+                  ),
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _streetAddressController,
@@ -99,20 +120,35 @@ class RegistrationForm extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState != null) {
                       if (_formKey.currentState!.validate()) {
                         final email = _emailAddressController.text;
                         final password = _passwordController.text;
 
                         final firebaseAuthService = FirebaseAuthService();
+                        final User? user= await firebaseAuthService.createUserWithEmailAndPassword(email, password);
                         firebaseAuthService.createUserWithEmailAndPassword(email, password);
+                        if(user!=null){
+                          final userModel = UserModel(
+                            id: user.uid,
+                            fullName: _fullNameController.text,
+                            phoneNumber: int.parse(_phoneNumberController.text),
+                            address: _streetAddressController.text
+                         );
+                          final firebaseDatabaseService =
+                              FirebaseDatabaseService();
+                          firebaseDatabaseService.createUser(userModel: userModel);
+                          Navigator.of(context).pushReplacementNamed('/login');
+                        }else{
+                          print('Registration error');
+                        }
                       }
                     }
                   },
                   child: Text("Submit"),
                 ),
-              ],
+                ],
             ),
           ),
         ),

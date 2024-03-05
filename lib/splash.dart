@@ -13,7 +13,7 @@ class _splashState extends State<splash> {
 
   @override
   void initState() {
-    Timer(Duration(seconds: 3),()=> Navigator.of(context).pushNamed('/profile'));
+    Timer(Duration(seconds: 3),()=> Navigator.of(context).pushNamed('/mainApp'));
     // TODO: implement initState
     super.initState();
   }

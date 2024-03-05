@@ -59,7 +59,8 @@ class ProfileView extends StatelessWidget {
                     child: Text('hello profile'),
                   ),
                 ),
-              )
+              ),
+
             ],
           ),
         ),

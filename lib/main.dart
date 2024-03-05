@@ -25,7 +25,7 @@ void main() {
       '/dashboard': (context) => Dashboard(),
       '/List_view': (context) => ListViewPage(),
       '/mainApp': (context) => MyApp(),
-      '/profile':(context) => profilePage(),
+      '/profile':(context) => Profile(),
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,
@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
     Dashboard(),
     ListViewPage(),
     offerPage(),
-    profilePage(),
+    Profile(),
   ];
 
   int _currentIndex = 0;

@@ -1,42 +1,212 @@
-import 'package:demo/Profile/profile_view.dart';
-import 'package:demo/Service/firebase_database_service.dart';
+
+import 'package:demo/Model/user_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class profilePage extends StatelessWidget {
-  profilePage({super.key});
+import '../Service/firebase_database_service.dart';
 
-  List<dynamic> usersList = [];
+class Profile extends StatefulWidget {
+  const Profile({super.key});
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  String uId='';
+
+  @override
+  void initState() {
+    initSharedPreferences();
+    super.initState();
+  }
+
+  void initSharedPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      uId = prefs.getString('uId')??'';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue,
       appBar: AppBar(
-        title: Text('Profile'),
-        centerTitle: true,
+        title: Text('View Profile'),
       ),
-      body: FutureBuilder(
-        future: FirebaseDatabaseService().getUsersInACollection(),
-        builder: (context, snapshot){
-         if(snapshot.hasError){
-           return Center(
-             child: Text('Error Fetching Users Data'),
-           );
-         }
-         if(snapshot.connectionState == ConnectionState.done){
-           usersList = snapshot.data as List;
-           return ProfileView();
-         }
-         return Center(
-           child:
-           SizedBox(
-             child: SizedBox(
-               child: CircularProgressIndicator(),
-               height: 50,
-               width: 50,
-             ),
-           ),
-         );
-        },
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        child: (uId.isNotEmpty)? FutureBuilder(
+            future: FirebaseDatabaseService()
+                .getUserDetailsUsingUID(uId: uId ?? ''),
+            builder: (context, snapshot) {
+
+              if(snapshot.connectionState==ConnectionState.done){
+                if(snapshot.hasError){
+                  return Center(
+                    child: Text('Users Details Not Found'),
+                  );
+                }
+                if(snapshot.hasData){
+                  final userModel = snapshot.data;
+                  return ListView(
+                    children: [
+                      ProfileImage(),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      BasicDetails(
+                        userModel: userModel,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      MenuWidgets(
+                        title: 'Settings',
+                        onPressed: () {
+                          print('Settings Clicked');
+                        },
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      MenuWidgets(
+                        title: 'Notifications',
+                        onPressed: () {
+                          print('Notifications Clicked');
+                        },
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      MenuWidgets(
+                        title: 'About App',
+                      ),
+                    ],
+                  );
+                }
+              }
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            )
+        :Center(
+          child: CircularProgressIndicator(),
+      ),
+      ),
+    );
+  }
+}
+
+///This widget is used to display the circular profile images
+class ProfileImage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 100,
+      width: 100,
+      child: CircleAvatar(
+        backgroundImage: AssetImage('assets/pics/profile.jpg'),
+      ),
+    );
+  }
+}
+
+///This is the widget for displaying the basic details of the user
+class BasicDetails extends StatelessWidget {
+  BasicDetails({required this.userModel});
+
+  final UserModel? userModel;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: Offset(
+              0,
+              3,
+            ), // changes position of shadow
+          ),
+        ],
+      ),
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.all(20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          userModel != null
+            ? Text('Name:${userModel!.fullName}')
+            : Text('Name: -'),
+          SizedBox(
+            height: 5,
+          ),
+          userModel != null
+              ? Text('Phone Number:${userModel!.phoneNumber}')
+              : Text('Phone Number: -'),
+          SizedBox(
+            height: 5,
+          ),
+          userModel != null
+              ? Text('Address:${userModel!.address}')
+              : Text('Address: -'),
+          SizedBox(
+            height: 30,
+          ),
+          ElevatedButton(
+              onPressed: (){},
+              child: Text('Update Profile'),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+///This widget is common for creating menus
+class MenuWidgets extends StatelessWidget {
+  MenuWidgets({required this.title, this.onPressed});
+
+  String title;
+  void Function()? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(
+                0,
+                3,
+              ), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title),
+            Icon(Icons.arrow_right),
+          ],
+        ),
       ),
     );
   }

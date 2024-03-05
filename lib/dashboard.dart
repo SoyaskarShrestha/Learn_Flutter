@@ -1,6 +1,7 @@
 
 import 'package:demo/Service/firebase_auth_services.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -26,18 +27,22 @@ class Dashboard extends StatelessWidget {
                       actions: [
                         GestureDetector(
                             child: Text('Yes'),
-                        onTap: (){
+                        onTap: ()async{
                               final firebaseAuthService = FirebaseAuthService();
                               firebaseAuthService.signOutUser();
+                              final SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                              prefs.remove('uId');
                               Navigator.of(dialogContext).pop();
-                              Navigator.of(dashboardContext).pushReplacementNamed('/Login');
+                              Navigator.of(dashboardContext).pushReplacementNamed('/login_Form');
                         },
                         ),
                         GestureDetector(
                           child: Text('No'),
                           onTap: (){
                           Navigator.of(dialogContext).pop();
-                        },),
+                        },
+                        ),
                       ],
                     );
                   }

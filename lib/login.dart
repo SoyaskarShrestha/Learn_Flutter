@@ -1,6 +1,7 @@
 import 'package:demo/Service/firebase_auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   Login({super.key});
@@ -17,6 +18,21 @@ class _LoginState extends State<Login> {
   final _passwordController = TextEditingController();
 
   bool _isChecked = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkIfUserIsLoggedIn();
+  }
+  void  checkIfUserIsLoggedIn()async{
+    final user = await FirebaseAuthService().getLoggedInUser();
+    if(user != null){
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('uId', user.uid);
+      Navigator.of(context).pushNamed('/mainApp');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +107,11 @@ class _LoginState extends State<Login> {
                           final firebaseAuthService = FirebaseAuthService();
                           final User? user = await firebaseAuthService.loginWithEmailAndPassword(username, password);
                           if(user!=null){
-                            print('Login success');
-                            Navigator.of(context).pushNamed('/profile');
+                            print('login successful');
+                            final SharedPreferences prefs= await SharedPreferences.getInstance();
+                            await prefs.setString('uId', user.uid);
+                            Navigator.of(context).pushReplacementNamed('/mainApp');
+
                           }
                           else{
                             print('Login error');
