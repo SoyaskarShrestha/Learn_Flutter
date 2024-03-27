@@ -134,7 +134,8 @@ class RegistrationForm extends StatelessWidget {
                             id: user.uid,
                             fullName: _fullNameController.text,
                             phoneNumber: int.parse(_phoneNumberController.text),
-                            address: _streetAddressController.text
+                            address: _streetAddressController.text,
+                              email: _emailAddressController.text,
                          );
                           final firebaseDatabaseService =
                               FirebaseDatabaseService();

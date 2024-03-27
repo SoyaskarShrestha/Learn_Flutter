@@ -1,6 +1,8 @@
+
 import 'dart:js';
 
 import 'package:demo/List_view.dart';
+import 'package:demo/Profile/users_list.dart';
 import 'package:demo/dashboard.dart';
 import 'package:demo/login.dart';
 import 'package:demo/offers.dart';
@@ -10,6 +12,9 @@ import 'package:demo/utils/default_firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:demo/registration_form.dart';
+import 'package:demo/Profile/users_list.dart';
+
+import 'Profile/update_profile.dart';
 
 void main() {
   initializeFirebase();
@@ -26,6 +31,8 @@ void main() {
       '/List_view': (context) => ListViewPage(),
       '/mainApp': (context) => MyApp(),
       '/profile':(context) => Profile(),
+      '/update-profile':(context) => UpdateProfile(),
+      '/users-list':(context)=> UsersList(),
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,

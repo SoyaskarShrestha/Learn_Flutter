@@ -35,10 +35,16 @@ class _ProfileState extends State<Profile> {
       backgroundColor: Colors.blue,
       appBar: AppBar(
         title: Text('View Profile'),
+        actions: [
+          IconButton(onPressed: ()=> Navigator.of(context).pushNamed('/users-list'),
+              icon: Icon(Icons.people),
+          )
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: (uId.isNotEmpty)? FutureBuilder(
+        child: (uId.isNotEmpty)
+            ? FutureBuilder(
             future: FirebaseDatabaseService()
                 .getUserDetailsUsingUID(uId: uId ?? ''),
             builder: (context, snapshot) {
@@ -163,7 +169,11 @@ class BasicDetails extends StatelessWidget {
             height: 30,
           ),
           ElevatedButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.of(context).pushNamed('/update-profile',
+                  arguments:userModel,
+                );
+              },
               child: Text('Update Profile'),
           )
         ],
